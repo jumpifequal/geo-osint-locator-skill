@@ -221,6 +221,7 @@ geo-osint-locator/
 ## Documentation
 
 - [Architecture](docs/architecture.md)
+- [Visual architecture](docs/visual-architecture.md)
 - [Output contract](docs/output-contract.md)
 - [Runtime tools](docs/runtime-tools.md)
 - [Usage examples](docs/examples.md)

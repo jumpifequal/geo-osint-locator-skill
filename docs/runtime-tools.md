@@ -2,6 +2,14 @@
 
 Geo OSINT Locator uses native visual reasoning first and deterministic helpers where repeatability matters.
 
+## How runtime helpers fit the pipeline
+
+<p align="center">
+  <img src="assets/slides/verification-pipeline.png" alt="Verification pipeline and helper placement" width="92%">
+</p>
+
+Deterministic helpers support specific verification stages; they do not replace the model's visual analysis or create evidence by themselves.
+
 ## Image geometry
 
 `scripts/image_geometry.py`

@@ -6,7 +6,22 @@ Its governing rule is:
 
 > **Ground claims only in visible evidence or executed verification. Similarity is not identity.**
 
+## Visual doctrine
+
+<p align="center">
+  <img src="assets/slides/core-directive.png" alt="Deduction not prediction: core directive" width="92%">
+</p>
+
+Three rules govern the entire system: **visible evidence only**, **similarity is not identity**, and **text-derived candidates require independent physical corroboration**.
+
 ## 1. Ingestion and prior firewall
+
+<p align="center">
+  <img src="assets/slides/geographic-prior-firewall.png" alt="Geographic Prior Firewall" width="92%">
+</p>
+
+The diagram above makes the anti-anchoring rule explicit: conversation-history geography is blocked unless the same candidate can be independently generated from the current image.
+
 
 Every image begins with a geographic reset.
 
@@ -23,6 +38,13 @@ The first-image counterfactual is mandatory:
 If not, the candidate is `CONTEXT_ANCHORED` and cannot progress until current-image evidence independently supports it.
 
 ## 2. Micro-forensics
+
+<p align="center">
+  <img src="assets/slides/micro-forensics.png" alt="Micro-forensics and identifier fast-path" width="92%">
+</p>
+
+The visual fast-path separates what is actually readable from what is merely inferred, and emphasizes multi-scale inspection before declaring decisive text unreadable.
+
 
 The image is scanned for compact, high-information regions:
 
@@ -80,6 +102,13 @@ Only the first three can become active candidates.
 
 ## 5. Chain of Verification (CoVE)
 
+<p align="center">
+  <img src="assets/slides/verification-pipeline.png" alt="End-to-end verification pipeline" width="92%">
+</p>
+
+The end-to-end view shows the five locked stages: ingestion/firewall, micro-forensics, hypothesis generation, falsification/verification, and the output contract.
+
+
 A candidate should survive multiple independent evidence channels.
 
 Possible channels include:
@@ -124,6 +153,13 @@ Evidence is also weighted by persistence:
 
 ## 7. Expected visibility and negative evidence
 
+<p align="center">
+  <img src="assets/slides/expected-visibility.png" alt="Expected visibility and negative evidence" width="92%">
+</p>
+
+Negative evidence only counts when a feature should physically be visible. Occlusion and out-of-frame states remain neutral instead of becoming false mismatches.
+
+
 Absence is evidence only when the feature should physically be visible from the current viewpoint.
 
 | Expected visibility | Feature absent | Result |
@@ -136,6 +172,13 @@ Absence is evidence only when the feature should physically be visible from the 
 This avoids penalizing candidates for hidden or out-of-frame features.
 
 ## 8. Active evidence loop
+
+<p align="center">
+  <img src="assets/slides/active-evidence-loop.png" alt="Active Evidence Loop" width="92%">
+</p>
+
+The loop prioritizes the next check by expected elimination value rather than convenience: rerun the firewall, identify the highest-value disagreement, rank tests, execute the best one, and update candidate states.
+
 
 When the first round does not produce STRONG:
 
@@ -156,6 +199,13 @@ Default maximum depth: six decisive checks after initial candidate generation.
 The goal is to maximize uncertainty reduction per unit execution cost.
 
 ## 9. Nearest-competitor falsification
+
+<p align="center">
+  <img src="assets/slides/competitor-falsification.png" alt="Nearest competitor falsification and killer check specificity" width="92%">
+</p>
+
+A killer check must separate the leader from its nearest competitor. Generic compatibility cannot authorize a STRONG result.
+
 
 Before a candidate becomes STRONG, identify the strongest plausible alternative and run a differential test.
 
@@ -212,6 +262,13 @@ A frequently photographed location cannot outrank a poorly documented location m
 
 ## 13. Discriminative reranking
 
+<p align="center">
+  <img src="assets/slides/discriminative-reranking.png" alt="Discriminative reranking" width="92%">
+</p>
+
+The reranker intentionally favors compact clusters of UNIQUE/HIGH, persistent clues over larger piles of generic matches, while preserving the candidate ledger for auditability.
+
+
 For each positive clue:
 
 ```text
@@ -250,6 +307,13 @@ The final ordering prioritizes:
 
 ## 14. STRONG gate
 
+<p align="center">
+  <img src="assets/slides/strong-gate.png" alt="STRONG gate and minimal clarification" width="92%">
+</p>
+
+The STRONG gate is conjunctive: score alone is never sufficient. If the gate cannot close and no better executable check remains, the system falls back to one minimal discriminative question.
+
+
 An exact-place answer is permitted only if **all** gate conditions pass:
 
 1. score ≥ 80;
@@ -265,8 +329,20 @@ An exact-place answer is permitted only if **all** gate conditions pass:
 
 ## 15. Output layer
 
+<p align="center">
+  <img src="assets/slides/output-dashboard.png" alt="Deterministic SVG output dashboard" width="92%">
+</p>
+
+The final dashboard exposes the top candidate ledger in a fixed layout. Rejected alternatives remain visible for auditability; content changes, layout does not.
+
+
 The final answer exposes the ranked candidate ledger and ends with a deterministic SVG dashboard when rendering is supported.
 
 The dashboard is only a visual ledger of already-computed evidence.
 
 It must never become a new reasoning layer.
+
+
+## Source presentation
+
+The full technical slide deck is retained as a secondary deep-dive artifact. The main architecture diagrams are also embedded directly in the Markdown documentation, so readers do not need PowerPoint to understand the system.

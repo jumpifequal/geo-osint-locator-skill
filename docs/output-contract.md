@@ -30,6 +30,13 @@ Do not display:
 
 ## Terminal SVG dashboard
 
+<p align="center">
+  <img src="assets/slides/output-dashboard.png" alt="Canonical final decision dashboard" width="92%">
+</p>
+
+The screenshot above is the visual contract: candidate #1 is highlighted, the metric order is fixed, and lower-ranked/rejected candidates remain visible for auditability.
+
+
 The SVG is the final visible block whenever rendering is available.
 
 Layout is deterministic:
