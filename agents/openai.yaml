@@ -1,0 +1,13 @@
+interface:
+  display_name: Geo OSINT Locator
+  short_description: High-precision image geolocation with evidence gates
+  icon_small: ./assets/icon.svg
+  icon_large: ./assets/icon.svg
+  brand_color: '#FFFFFF'
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
