@@ -1,5 +1,7 @@
 # Geo OSINT Locator
 
+[![Install with npx](https://img.shields.io/badge/install-npx%20skills%20add-CB3837)](#install)
+
 High-precision image geolocation skill for GeoGuessr-style analysis and GEO-OSINT verification from a **single image**.
 
 It is designed around one principle:
@@ -134,6 +136,44 @@ Each candidate card contains:
 Candidate `#1` is always visually highlighted.
 
 The dashboard is a visualization of already-computed evidence; it is **not** an additional reasoning layer.
+
+## Install
+
+Install directly from GitHub with the open `skills` CLI:
+
+```bash
+npx skills add jumpifequal/geo-osint-locator-skill
+```
+
+Inspect what the CLI detects before installing:
+
+```bash
+npx skills add jumpifequal/geo-osint-locator-skill --list
+```
+
+Install globally for a specific agent:
+
+```bash
+npx skills add jumpifequal/geo-osint-locator-skill -g -a codex -y
+npx skills add jumpifequal/geo-osint-locator-skill -g -a claude-code -y
+```
+
+Install from a local clone:
+
+```bash
+git clone https://github.com/jumpifequal/geo-osint-locator-skill.git
+cd geo-osint-locator-skill
+npx skills add .
+```
+
+Verify the repository before installation or contribution:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python tools/validate_repo.py
+```
+
+> `npx skills add` installs the skill. The repository itself does not require `npm install`; Node.js/npm are only needed to run the `skills` CLI.
 
 ## Quick start
 
