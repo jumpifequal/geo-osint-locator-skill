@@ -213,6 +213,8 @@ Install local development dependencies:
 python -m pip install -r requirements-dev.txt
 ```
 
+**NOTE**: You need this step ONLY if the skill is executed by a coding agent; if it's used in a web chat, the LLM handles installing the right modules.
+
 ## Helper modules
 
 | Script | Purpose |
