@@ -4,6 +4,11 @@
 
 High-precision image geolocation skill for GeoGuessr-style analysis and GEO-OSINT verification from a **single image**.
 
+
+> **Theory paper on the skill is here https://enrico-frumento.medium.com/deterministically-verified-prompting-techniques-a-case-study-on-an-image-geolocation-skill-c5d49eefe0ca**
+
+-----------
+
 It is designed around one principle:
 
 > **Deduction, not prediction. Similarity is not identity.**
