@@ -7,6 +7,8 @@ High-precision image geolocation skill for GeoGuessr-style analysis and GEO-OSIN
 
 > **Theory paper on the skill is here https://enrico-frumento.medium.com/deterministically-verified-prompting-techniques-a-case-study-on-an-image-geolocation-skill-c5d49eefe0ca**
 
+**LLMs are improving their capabilities of geolocating photos, look a comparison here --> https://www.bellingcat.com/resources/2026/10/22/can-llms-supercharge-geolocations-our-tests-show-big-improvements-but-humans-remain-key/**
+
 -----------
 
 It is designed around one principle:
