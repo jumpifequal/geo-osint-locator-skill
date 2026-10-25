@@ -258,3 +258,34 @@ Do not:
 If a field is unavailable, render `—` or the allowed neutral state (`ND` / `NOT_EXECUTED`) in its fixed slot.
 
 The SVG is a visualization of already-computed evidence, not a new reasoning layer.
+
+
+## Locality state
+
+Report one locality state for the leading candidate:
+
+- `AREA_NARROWED`
+- `CAMERA_POINT_VERIFIED`
+- `HUMAN_REVIEW_REQUIRED`
+
+Interpretation:
+- `AREA_NARROWED` = the area/locality is supported, but the exact camera point is not yet verified.
+- `CAMERA_POINT_VERIFIED` = last-mile verification passed.
+- `HUMAN_REVIEW_REQUIRED` = exact-point precision matters, but automated verification is incomplete or unavailable.
+
+`STRONG` exact-place wording is forbidden unless the locality state is `CAMERA_POINT_VERIFIED`.
+
+If the task only asks for the likely place/area and exact coordinates are unnecessary, `AREA_NARROWED` is a valid final state.
+
+
+## Satellite escalation reporting
+
+When satellite/aerial escalation is triggered, report one compact line per source class before the final conclusion:
+
+- `ESRI / ArcGIS: PASS | FAIL | ND | NOT_EXECUTED`
+- `Copernicus / Sentinel: PASS | FAIL | ND | NOT_EXECUTED`
+- `NASA Worldview / Earthdata: PASS | FAIL | ND | NOT_EXECUTED`
+
+If `NOT_EXECUTED`, include the brief technical reason.
+
+Do not omit a source class from the report merely because another source already supported the leader.

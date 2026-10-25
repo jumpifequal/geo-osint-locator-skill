@@ -74,3 +74,28 @@ After scoring:
 4. do not let STRONG termination erase already-considered alternatives.
 
 This preserves auditability and exposes under-ranked correct candidates.
+
+
+## Exact-point locality gate
+
+In addition to all existing STRONG requirements:
+
+- exact-place `STRONG` requires `locality_state == CAMERA_POINT_VERIFIED`;
+- `AREA_NARROWED` cannot be promoted to exact-place STRONG merely through score accumulation;
+- if exact coordinates are requested and `CAMERA_POINT_VERIFIED` is not achieved, return `HUMAN_REVIEW_REQUIRED` when the remaining uncertainty matters operationally;
+- ordinary area-level tasks may terminate at `AREA_NARROWED` without forcing human review.
+
+
+## Satellite escalation completion gate
+
+If satellite/aerial escalation was triggered, the candidate-verification cycle is not complete until all three source classes are accounted for:
+
+- ESRI / ArcGIS World Imagery
+- Copernicus / Sentinel
+- NASA Worldview / Earthdata
+
+Each must be `PASS`, `FAIL`, `ND`, or `NOT_EXECUTED`.
+
+A source left unchecked despite being available blocks termination as a decisive winner.
+
+`STRONG` remains governed by all existing gates; satellite escalation adds evidence and does not bypass them.

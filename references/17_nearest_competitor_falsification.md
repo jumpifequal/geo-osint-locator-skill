@@ -45,3 +45,29 @@ If the nearest competitor survives with similar explanatory power, do not return
 Do not use numerical score margin alone as proof.
 
 Score separation is supporting evidence only after differential falsification and holistic scene checks.
+
+
+## Last-mile competitor rule
+
+For exact camera-point verification, compare the leader and nearest serious competitor using the same last-mile channel whenever possible.
+
+Preferred differential evidence:
+- aerial/map geometry;
+- relational OSM constraints;
+- viewpoint side/order;
+- road/rail/water alignment;
+- structural footprint arrangement.
+
+A leader is not `CAMERA_POINT_VERIFIED` while a serious competitor remains equally compatible with the same camera-point evidence.
+
+
+## Multi-source satellite differential
+
+If the nearest competitor survives standard verification, compare leader and competitor across all available satellite/aerial source classes.
+
+For each source class, ask the same differential question:
+- what geometry does the leader predict?
+- what geometry does the competitor predict?
+- which prediction does the imagery actually support?
+
+A leader cannot be considered decisively stronger merely because one imagery source supports it while other available source classes remain unchecked.

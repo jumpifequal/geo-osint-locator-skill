@@ -4,7 +4,6 @@
 
 High-precision image geolocation skill for GeoGuessr-style analysis and GEO-OSINT verification from a **single image**.
 
-
 > **Theory paper on the skill is here https://enrico-frumento.medium.com/deterministically-verified-prompting-techniques-a-case-study-on-an-image-geolocation-skill-c5d49eefe0ca**
 
 **LLMs are improving their capabilities of geolocating photos, look a comparison here --> https://www.bellingcat.com/resources/2026/10/22/can-llms-supercharge-geolocations-our-tests-show-big-improvements-but-humans-remain-key/**
@@ -33,9 +32,12 @@ Given one image, Geo OSINT Locator can:
 - run Chain-of-Verification (CoVE) across independent evidence channels;
 - test expected visibility and negative evidence correctly;
 - reconstruct coarse viewpoint geometry where useful;
+- distinguish `AREA_NARROWED` from `CAMERA_POINT_VERIFIED` so area identification is never confused with exact camera-point verification;
 - falsify the nearest serious competitor before promoting the leader;
+- escalate unresolved cases across **all available satellite/aerial source classes** (ESRI / ArcGIS World Imagery, Copernicus / Sentinel, NASA Worldview / Earthdata);
 - rerank candidates using **discriminative density**, not raw clue count alone;
-- render a deterministic final SVG dashboard with the ranked candidate ledger.
+- return `HUMAN_REVIEW_REQUIRED` when exact-point precision matters but automated last-mile verification remains unresolved;
+- render a deterministic final SVG dashboard with the ranked candidate ledger and locality state.
 
 ## Core workflow
 
@@ -60,6 +62,15 @@ Active Evidence Loop
 Nearest-Competitor Falsification
   ↓
 Discriminative Reranking
+  ↓
+Clear winner?
+  ├─ Yes → Last-Mile Camera-Point Verification
+  └─ No  → Mandatory Multi-Source Satellite/Aerial Escalation
+            ├─ ESRI / ArcGIS World Imagery
+            ├─ Copernicus / Sentinel
+            └─ NASA Worldview / Earthdata
+  ↓
+AREA_NARROWED | CAMERA_POINT_VERIFIED | HUMAN_REVIEW_REQUIRED
   ↓
 STRONG Gate
   ↓
@@ -103,10 +114,31 @@ discrimination × quality × persistence
 
 This prevents many generic clues from overpowering a smaller cluster of highly specific local clues.
 
+### Last-mile camera-point verification
+
+Version 1.1 separates **finding the right area** from **verifying the exact camera point**.
+
+The leading candidate receives one locality state:
+
+- `AREA_NARROWED` — the locality is supported, but the exact camera point is not yet verified;
+- `CAMERA_POINT_VERIFIED` — candidate-specific last-mile geometry has been verified;
+- `HUMAN_REVIEW_REQUIRED` — exact-point precision matters, but automated verification remains unresolved or unavailable.
+
+When no clear winner emerges after the standard evidence loop, the skill must escalate across **all available satellite/aerial source classes**:
+
+1. **ESRI / ArcGIS World Imagery** — high-resolution structural and local geometry checks;
+2. **Copernicus / Sentinel** — medium-resolution spatial and temporal comparison;
+3. **NASA Worldview / Earthdata** — broad environmental and temporal context.
+
+Each source is recorded as `PASS`, `FAIL`, `ND`, or `NOT_EXECUTED`. The skill may not stop after the first confirming source: all available source classes must be accounted for before the unresolved competition is considered closed.
+
+Satellite/aerial imagery is used to test **predicted geometry**, not as an unconstrained visual search channel.
+
 ### Exact-place lock
 
 An exact location is authorized only when the full STRONG gate passes, including:
 
+- locality state is `CAMERA_POINT_VERIFIED`;
 - score ≥ 80;
 - all critical must-haves PASS;
 - at least 2 independent CoVE channels PASS;
@@ -116,7 +148,7 @@ An exact location is authorized only when the full STRONG gate passes, including
 - viewpoint not INCOMPATIBLE when observable;
 - nearest competitor rejected, materially weaker, or absent after targeted search.
 
-Otherwise the skill returns a supported macro-area, `PLAUSIBLE`, `WEAK`, or `INDETERMINATE`.
+Otherwise the skill returns a supported area-level result (`AREA_NARROWED`), a lower candidate state such as `PLAUSIBLE` / `WEAK`, `INDETERMINATE`, or `HUMAN_REVIEW_REQUIRED` when exact-point verification materially matters.
 
 ## Candidate ledger
 
@@ -136,9 +168,10 @@ Each candidate card contains:
 4. Score;
 5. High/unique clues;
 6. Holistic match;
-7. Competitor;
-8. Killer check;
-9. Viewpoint.
+7. Locality state;
+8. Competitor;
+9. Killer check;
+10. Viewpoint.
 
 Candidate `#1` is always visually highlighted.
 
@@ -224,18 +257,18 @@ python -m pip install -r requirements-dev.txt
 
 ## Helper modules
 
-| Script | Purpose |
-|---|---|
-| `image_geometry.py` | Crop, zoom, tiling and deterministic image geometry |
-| `geo_math.py` | Haversine distance, bearings and bounding boxes |
-| `evidence_rank.py` | Rank next verification checks by expected elimination value |
-| `spatial_relations.py` | Derive and compare coarse spatial relationships |
-| `prior_guard.py` | Enforce candidate provenance and geographic-prior isolation |
-| `competitor_gate.py` | Enforce STRONG-gate competitor and scene constraints |
-| `rerank_candidates.py` | Rerank candidates by discriminative evidence density |
-| `map_lookup.py` | Targeted Nominatim search/reverse lookup |
-| `overpass_lookup.py` | Targeted Overpass queries |
-| `dashboard_svg.py` | Render the deterministic final decision dashboard |
+| Script                 | Purpose                                                     |
+| ---------------------- | ----------------------------------------------------------- |
+| `image_geometry.py`    | Crop, zoom, tiling and deterministic image geometry         |
+| `geo_math.py`          | Haversine distance, bearings and bounding boxes             |
+| `evidence_rank.py`     | Rank next verification checks by expected elimination value |
+| `spatial_relations.py` | Derive and compare coarse spatial relationships             |
+| `prior_guard.py`       | Enforce candidate provenance and geographic-prior isolation |
+| `competitor_gate.py`   | Enforce STRONG-gate competitor and scene constraints        |
+| `rerank_candidates.py` | Rerank candidates by discriminative evidence density        |
+| `map_lookup.py`        | Targeted Nominatim search/reverse lookup                    |
+| `overpass_lookup.py`   | Targeted Overpass queries                                   |
+| `dashboard_svg.py`     | Render the deterministic final decision dashboard           |
 
 ## Repository structure
 
@@ -257,7 +290,7 @@ geo-osint-locator/
 │   ├── runtime-tools.md
 │   └── Zero_Hallucination_Geolocation_Architecture.pptx
 ├── references/
-│   └── 01_... through 20_...
+│   └── 01_... through 22_...
 ├── scripts/
 │   └── deterministic helpers
 ├── CHANGELOG.md
@@ -284,6 +317,8 @@ The skill deliberately prefers:
 - candidate-specific falsification over generic resemblance;
 - independent evidence over duplicate observations;
 - persistent structural clues over transient scene details;
+- `CAMERA_POINT_VERIFIED` over score-only exact-place claims;
+- cross-source satellite/aerial corroboration when no clear winner emerges;
 - actual tool execution over narrated or implied execution.
 
 ## Development validation
@@ -306,7 +341,7 @@ python tools/validate_repo.py
 
 ## Version
 
-`1.0`
+`1.1`
 
 Author: **Enrico Frumento**
 

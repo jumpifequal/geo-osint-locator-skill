@@ -37,3 +37,25 @@ Use whenever the first verification round does not produce STRONG.
 When useful checks are exhausted but one user-known clue could plausibly resolve the remaining ambiguity, transition once to `references/15_minimal_user_clarification.md`.
 
 Do not ask the user while a better image/tool/search check remains executable.
+
+
+## Satellite escalation branch
+
+Before terminating the active evidence loop as unresolved, check whether a clear winner exists.
+
+If not, branch into mandatory satellite/aerial escalation:
+
+```text
+NO CLEAR WINNER
+→ ESRI / ArcGIS World Imagery
+→ Copernicus / Sentinel
+→ NASA Worldview / Earthdata
+→ cross-source evidence update
+→ nearest-competitor re-test
+→ discriminative rerank
+→ STRONG | AREA_NARROWED | HUMAN_REVIEW_REQUIRED
+```
+
+Every source class must be either executed or explicitly marked `NOT_EXECUTED`.
+
+Do not skip directly from unresolved candidate competition to final output while an available satellite/aerial source remains unchecked.

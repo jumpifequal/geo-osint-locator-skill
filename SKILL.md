@@ -13,7 +13,7 @@ description: 'High-precision image geolocation and GeoGuessr/OSINT localisation 
   viewpoint reconstruction, or evidence-scored ranking.'
 metadata:
   author: Enrico Frumento
-  version: '1.0'
+  version: '1.1'
 ---
 
 # Geo OSINT Locator
@@ -123,6 +123,73 @@ The fixed structure is:
 - optional final line: Decisive missing evidence.
 
 Use the exact contract in `references/07_output_contract.md`.
+
+
+
+## Satellite / aerial evidence sources
+
+For last-mile spatial verification, use the source policy in `references/22_satellite_aerial_sources.md`.
+
+Preferred source classes:
+- ESRI / ArcGIS World Imagery for high-resolution local structural comparison;
+- Copernicus / Sentinel for open medium-resolution spatial and temporal comparison;
+- NASA Worldview / Earthdata for broad environmental and temporal context.
+
+Generate the candidate and predicted geometry before consulting imagery.
+
+Never browse satellite imagery as an unconstrained similarity search.
+
+
+## Mandatory satellite escalation for unresolved candidate competition
+
+If no clear winner emerges after the standard candidate-verification loop, satellite/aerial verification becomes mandatory.
+
+No clear winner includes:
+- 2+ materially plausible candidates;
+- nearest competitor still survives;
+- leader depends mainly on generic evidence;
+- `CAMERA_POINT_VERIFIED` not achieved;
+- candidate ranking remains fragile after discriminative reranking.
+
+When this happens:
+1. consult `references/22_satellite_aerial_sources.md`;
+2. use all available source classes:
+   - ESRI / ArcGIS World Imagery;
+   - Copernicus / Sentinel;
+   - NASA Worldview / Earthdata;
+3. test candidate-specific predicted geometry against each source;
+4. record `PASS | FAIL | ND | NOT_EXECUTED` for each source class;
+5. do not terminate the escalation after the first confirming result;
+6. rerun competitor comparison and candidate ranking after all available satellite/aerial checks.
+
+If a source class cannot be accessed in the runtime, mark it `NOT_EXECUTED` and continue with the remaining classes.
+
+The purpose is cross-source falsification and discrimination, not confirmation bias.
+
+## Last-mile verification states
+
+Keep macro-area identification separate from exact camera-point verification.
+
+Allowed terminal locality states:
+- `AREA_NARROWED`: the image is credibly localized to a place/area, but the camera point is not yet verified.
+- `CAMERA_POINT_VERIFIED`: the candidate camera point has passed last-mile spatial verification.
+- `HUMAN_REVIEW_REQUIRED`: exact-point precision matters but automated last-mile verification is incomplete, unavailable, or still contradictory.
+
+Rules:
+- `STRONG` exact-place output requires `CAMERA_POINT_VERIFIED`.
+- `AREA_NARROWED` may still be high-confidence at city/area level, but must not be presented as an exact camera point.
+- `HUMAN_REVIEW_REQUIRED` is conditional, not a default: use it when exact coordinates are requested, the task is high-stakes, or camera-point verification remains unresolved after the active evidence loop.
+- Do not downgrade ordinary GeoGuessr-style tasks to human review when a supported area-level answer is sufficient.
+
+For last-mile verification, prefer candidate-specific checks using:
+- aerial/satellite imagery when available;
+- map geometry;
+- relational OSM queries between visible features;
+- camera-side / left-right ordering;
+- object-to-road / rail / shoreline / structure geometry;
+- relative elevation and orientation.
+
+Do not hard-code any single imagery provider. Treat aerial imagery as an abstract provider capability.
 
 ## Terminal output invariant
 
@@ -239,3 +306,6 @@ If the user does not know, continue with `INDETERMINATE` rather than inventing c
 Prefer bundled scripts over reconstructing geometry, coordinate maths, evidence-ranking arithmetic, spatial-relation logic, URL encoding, or Overpass boilerplate.
 
 When STRONG has not passed, do not run every conceivable check. Select the next check with the highest expected elimination value, execute it, update the candidate set, and repeat. Stop broad exploration as soon as STRONG passes or no useful check remains.
+
+
+- `references/21_camera_point_verification.md` — last-mile camera-point verification, locality states, aerial/relational checks, and human-review gate.

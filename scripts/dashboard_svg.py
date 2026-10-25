@@ -48,6 +48,7 @@ def normalize_candidate(candidate, index):
         "killer": _s(candidate.get("killer")),
         "viewpoint": _metric_label(candidate.get("viewpoint")),
         "status": _status(candidate.get("status")),
+        "locality_state": _s(candidate.get("locality_state")),
     }
 
 def render_dashboard_svg(candidates, decisive_missing_evidence=None, title=None):
@@ -159,6 +160,7 @@ def render_dashboard_svg(candidates, decisive_missing_evidence=None, title=None)
         parts.append(f'<text x="{x_holistic}" y="{y + 96}" class="metric-value">{_esc(row["holistic"])}</text>')
 
         footer = (
+            f'Locality: {_clip(row["locality_state"], 28)} · '
             f'Competitor: {_clip(row["competitor"], 34)} · '
             f'Killer check: {_clip(row["killer"], 24)} · '
             f'Viewpoint: {_clip(row["viewpoint"], 18)}'

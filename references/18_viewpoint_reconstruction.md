@@ -38,3 +38,14 @@ Use maps or geometry scripts only to test candidate compatibility, not to manufa
 ## STRONG requirement
 
 When viewpoint geometry is materially observable, `INCOMPATIBLE` blocks STRONG.
+
+
+## Camera-point role
+
+Viewpoint reconstruction contributes directly to last-mile verification.
+
+A candidate may reach `CAMERA_POINT_VERIFIED` only if viewpoint is:
+- `COMPATIBLE`, or
+- `ND` only when viewpoint geometry is genuinely not observable and another independent candidate-specific geometric relation verifies the point.
+
+`INCOMPATIBLE` blocks `CAMERA_POINT_VERIFIED`.
